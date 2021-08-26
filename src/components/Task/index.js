@@ -10,15 +10,22 @@ import React from 'react';
 // type is like normal type
 // onChange is callback function like onChange
 // value is the same like value on normal input in most cases use the hook
+const IsDone = (done) => {
+    if (done) {
+        return "taskContainer done"
+    } else {
+        return "taskContainer not"
+    }
+}
 
-const ViewTask = ({ task, index }) => {
+
+const ViewTask = ({ task }) => {
 
     return (
-        <dvi>
-            <p>{index}</p>
+        <div className={IsDone(task.done)} >
             <h3>{task.description}</h3>
-            <h3>{task.duration}</h3>
-        </dvi>
+            <h3>{((task.duration - new Date().getTime()) / 24 / 3600000).toFixed(2)}</h3>
+        </div>
     )
 };
 

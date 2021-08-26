@@ -1,0 +1,17 @@
+.taskContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    border: 2px solid black;
+    border-radius: 15px;
+    width: 20em;
+    margin: 20px;
+}
+
+.not {
+    border: 2px solid rgb(206, 0, 0);
+}
+
+.done {
+    border: 2px solid rgb(0, 177, 9);
+}

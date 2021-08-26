@@ -37,11 +37,9 @@ const Tasks = () => {
 				if (res.data.note === "created" || res.data.note === "loged") {
 					dispatch({ type: "LOGIN" });
 				} else {
-					setError(res.data.note);
+                    setError(res.data.note);
+                    setTasks(res.data.tasks);
 				}
-            })
-            .then(() => {
-                fetchTasks()
             })
 			.catch((err) => {
 				console.log(err);
@@ -64,6 +62,14 @@ const Tasks = () => {
 			});
 	};
 
+    const renderTask = () => {
+        return tasks.map((task, index) => {
+            //console.log(task.description);
+            //console.log(task.duration);
+            return (<ViewTask key={index} task={task} />)
+        })
+    }
+
 	const logOut = () => {
 		dispatch({ type: "LOGOUT" });
 		history.push("/");
@@ -72,7 +78,10 @@ const Tasks = () => {
     useEffect(() => {
         // checking if user is loged
         fetchTasks()
-    }, [  ])
+    }, [])
+    
+
+    
     
 
 	return (
@@ -99,14 +108,7 @@ const Tasks = () => {
 				/>
 			</form>
             <h3>{error}</h3>
-            <div>
-            {tasks.map((task, index) => {
-				//console.log(task.description);
-				//console.log(task.duration);
-				return (<ViewTask key={index} task={task} />)
-			})}                
-            </div>
-
+            {renderTask()}
 		</div>
 	);
 };

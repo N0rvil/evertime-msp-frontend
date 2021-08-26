@@ -15,9 +15,10 @@ const Tasks = () => {
 	const isLoged = useSelector((state) => state.isLoged);
 	const dispatch = useDispatch();
 	// custom hooks
+    const initialState = [];
 	const [description, setDescription] = useState("");
 	const [duration, setDuration] = useState("");
-	const [tasks, setTasks] = useState("");
+	const [tasks, setTasks] = useState(initialState);
 	const [error, setError] = useState("");
 	// handleSubmit function on submit will send request on login or register
 	const handleSubmit = (e) => {
@@ -38,7 +39,10 @@ const Tasks = () => {
 				} else {
 					setError(res.data.note);
 				}
-			})
+            })
+            .then(() => {
+                fetchTasks()
+            })
 			.catch((err) => {
 				console.log(err);
 			});
@@ -88,18 +92,21 @@ const Tasks = () => {
 					type={"number"}
 					value={duration}
 				/>
-				<BigInput
+                <BigInput
 					onChange={setDuration}
 					placeholder={"Add task"}
 					type={"submit"}
 				/>
 			</form>
-			<h3>{error}</h3>
-            {tasks.map((task) => {
+            <h3>{error}</h3>
+            <div>
+            {tasks.map((task, index) => {
 				//console.log(task.description);
 				//console.log(task.duration);
-				return (<ViewTask task={task} />)
-			})}
+				return (<ViewTask key={index} task={task} />)
+			})}                
+            </div>
+
 		</div>
 	);
 };

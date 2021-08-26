@@ -15,6 +15,7 @@ const ViewTask = ({ task, index }) => {
 
     return (
         <dvi>
+            <p>{index}</p>
             <h3>{task.description}</h3>
             <h3>{task.duration}</h3>
         </dvi>

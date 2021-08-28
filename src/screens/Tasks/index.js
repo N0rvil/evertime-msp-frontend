@@ -18,7 +18,8 @@ const Tasks = () => {
     const initialState = [];
 	const [description, setDescription] = useState("");
 	const [duration, setDuration] = useState("");
-	const [tasks, setTasks] = useState(initialState);
+	const [listOfOnGoingTasks, setListOfOnGoingTasks] = useState(initialState);
+	const [listOfDoneOrFaildTasks, setListOfDoneOrFaildTasks] = useState(initialState);
 	const [error, setError] = useState("");
 	// handleSubmit function on submit will send request on login or register
 	const handleSubmit = (e) => {
@@ -38,9 +39,13 @@ const Tasks = () => {
 					dispatch({ type: "LOGIN" });
 				} else {
                     setError(res.data.note);
-                    setTasks(res.data.tasks);
+                    setListOfOnGoingTasks(res.data.listOfOnGoingTasks);
+                    setListOfDoneOrFaildTasks(res.data.listOfDoneOrFaildTasks);
 				}
-            })
+			})
+			.then(() => {
+				reset()
+			})
 			.catch((err) => {
 				console.log(err);
 			});
@@ -55,14 +60,15 @@ const Tasks = () => {
 			url: `http://localhost:3005/fetch-tasks`,
 		})
 			.then((res) => {
-				setTasks((prev) => (prev = res.data.tasks));
+				setListOfOnGoingTasks((prev) => (prev = res.data.listOfOnGoingTasks));
+				setListOfDoneOrFaildTasks((prev) => (prev = res.data.listOfDoneOrFaildTasks));
 			})
 			.catch((err) => {
 				console.log(err);
 			});
 	};
 
-    const renderTask = () => {
+    const renderTask = (tasks) => {
         return tasks.map((task, index) => {
             //console.log(task.description);
             //console.log(task.duration);
@@ -74,21 +80,25 @@ const Tasks = () => {
 		dispatch({ type: "LOGOUT" });
 		history.push("/");
     };
-    
+
     useEffect(() => {
         // checking if user is loged
         fetchTasks()
-    }, [])
+	}, [])
+	
     
-
+	const reset = () => {
+		setDescription("")
+		setDuration("")
+	}
     
     
 
 	return (
-		<div>
+		<div >
 			<button onClick={() => logOut()}>LOGOUT</button>
 			<Navbar />
-			<form onSubmit={(e) => handleSubmit(e)}>
+			<form className="alignment" id="input-task" onSubmit={(e) => handleSubmit(e)}>
 				<BigInput
 					onChange={setDescription}
 					placeholder={"Description"}
@@ -107,8 +117,19 @@ const Tasks = () => {
 					type={"submit"}
 				/>
 			</form>
-            <h3>{error}</h3>
-            {renderTask()}
+			<h3>{error}</h3>
+			<div className="tasksContainer">
+				<div className="alignment">
+					<h2>On going tasks</h2>
+					{renderTask(listOfOnGoingTasks)}
+				</div>
+				<div className="alignment">
+					<h2>Done or faild tasks</h2>
+					{renderTask(listOfDoneOrFaildTasks)}
+				</div>
+				
+			</div>
+            
 		</div>
 	);
 };

@@ -15,11 +15,12 @@ const Tasks = () => {
 	const isLoged = useSelector((state) => state.isLoged);
 	const dispatch = useDispatch();
 	// custom hooks
-    const initialState = [];
+	const initialState = [];
 	const [description, setDescription] = useState("");
 	const [duration, setDuration] = useState("");
 	const [listOfOnGoingTasks, setListOfOnGoingTasks] = useState(initialState);
-	const [listOfDoneOrFaildTasks, setListOfDoneOrFaildTasks] = useState(initialState);
+	const [listOfDoneOrFaildTasks, setListOfDoneOrFaildTasks] =
+		useState(initialState);
 	const [error, setError] = useState("");
 	// handleSubmit function on submit will send request on login or register
 	const handleSubmit = (e) => {
@@ -38,19 +39,18 @@ const Tasks = () => {
 				if (res.data.note === "created" || res.data.note === "loged") {
 					dispatch({ type: "LOGIN" });
 				} else {
-                    setError(res.data.note);
-                    setListOfOnGoingTasks(res.data.listOfOnGoingTasks);
-                    setListOfDoneOrFaildTasks(res.data.listOfDoneOrFaildTasks);
+					setError(res.data.note);
+					setListOfOnGoingTasks(res.data.listOfOnGoingTasks);
+					setListOfDoneOrFaildTasks(res.data.listOfDoneOrFaildTasks);
 				}
 			})
 			.then(() => {
-				reset()
+				reset();
 			})
 			.catch((err) => {
 				console.log(err);
 			});
 	};
-
 
 	const fetchTasks = () => {
 		//e.preventDefault();
@@ -60,45 +60,50 @@ const Tasks = () => {
 			url: `http://localhost:3005/fetch-tasks`,
 		})
 			.then((res) => {
-				setListOfOnGoingTasks((prev) => (prev = res.data.listOfOnGoingTasks));
-				setListOfDoneOrFaildTasks((prev) => (prev = res.data.listOfDoneOrFaildTasks));
+				setListOfOnGoingTasks(
+					(prev) => (prev = res.data.listOfOnGoingTasks)
+				);
+				setListOfDoneOrFaildTasks(
+					(prev) => (prev = res.data.listOfDoneOrFaildTasks)
+				);
 			})
 			.catch((err) => {
 				console.log(err);
 			});
 	};
 
-    const renderTask = (tasks) => {
-        return tasks.map((task, index) => {
-            //console.log(task.description);
-            //console.log(task.duration);
-            return (<ViewTask key={index} task={task} />)
-        })
-    }
+	const renderTask = (tasks) => {
+		return tasks.map((task, index) => {
+			//console.log(task.description);
+			//console.log(task.duration);
+			return <ViewTask key={index} task={task} />;
+		});
+	};
 
 	const logOut = () => {
 		dispatch({ type: "LOGOUT" });
 		history.push("/");
-    };
+	};
 
-    useEffect(() => {
-        // checking if user is loged
-        fetchTasks()
-	}, [])
-	
-    
+	useEffect(() => {
+		// checking if user is loged
+		fetchTasks();
+	}, []);
+
 	const reset = () => {
-		setDescription("")
-		setDuration("")
-	}
-    
-    
+		setDescription("");
+		setDuration("");
+	};
 
 	return (
-		<div >
+		<div>
 			<button onClick={() => logOut()}>LOGOUT</button>
 			<Navbar />
-			<form className="alignment" id="input-task" onSubmit={(e) => handleSubmit(e)}>
+			<form
+				className="alignment"
+				id="input-task"
+				onSubmit={(e) => handleSubmit(e)}
+			>
 				<BigInput
 					onChange={setDescription}
 					placeholder={"Description"}
@@ -111,7 +116,7 @@ const Tasks = () => {
 					type={"number"}
 					value={duration}
 				/>
-                <BigInput
+				<BigInput
 					onChange={setDuration}
 					placeholder={"Add task"}
 					type={"submit"}
@@ -127,9 +132,7 @@ const Tasks = () => {
 					<h2>Done or faild tasks</h2>
 					{renderTask(listOfDoneOrFaildTasks)}
 				</div>
-				
 			</div>
-            
 		</div>
 	);
 };

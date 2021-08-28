@@ -4,6 +4,7 @@ import axios from 'axios';
 // pages
 // components
 import BigInput from "../../components/BigInput";
+import CheckInput from "../../components/CheckInput";
 // styles
 
 // Input for big froms like singIn
@@ -27,6 +28,17 @@ const date = (task) => {
     }
 };
 
+const changetext = (doneOrNot) => {
+    if (!doneOrNot) {
+        return "Done";
+    } else {
+        return "Undone";
+    }
+}
+
+
+
+
 
 const ViewTask = ({ task }) => {
 
@@ -47,9 +59,15 @@ const ViewTask = ({ task }) => {
         .then(res => {
             setError(res.data.note);
         })
+        .then(() => {
+                reset()
+        })
         .catch(err => {
             console.log(err);
         });
+    };
+    const reset = () => {
+		done("");
     };
 
 
@@ -58,14 +76,15 @@ const ViewTask = ({ task }) => {
 			<h3>{task.description}</h3>
             <h3>{date(task.duration)}</h3>
             <form onSubmit={(e) => handleSubmit(e)}>
-                <BigInput
+                <CheckInput
+                    checked={task.done}
 					onChange={setDone}
 					type={"checkbox"}
 					value={task._id}
                 />
                 <BigInput
 					onChange={setDone}
-					placeholder={"Finnished!"}
+					placeholder={changetext(task.done)}
 					type={"submit"}
 				/>
             </form>

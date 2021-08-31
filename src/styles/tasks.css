@@ -1,3 +1,15 @@
+.tasksContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.alignment {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
 .taskContainer {
     display: flex;
     align-items: center;

@@ -9,7 +9,6 @@ import NotFound from '../screens/NotFound';
 // components
 import history from '../history';
 // styles
-import "../styles/tasks.css" 
 import "../styles/style.css" 
 
 

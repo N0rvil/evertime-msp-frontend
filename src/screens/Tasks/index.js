@@ -6,13 +6,14 @@ import { useSelector, useDispatch } from "react-redux";
 // components
 import Navbar from "../../components/Navbar";
 import BigInput from "../../components/BigInput";
-import ViewTask from "../../components/Task";
+import Task from "../../components/Task";
 import history from "../../history";
 // styles
 
 const Tasks = () => {
 	// Connect on reducer
 	const isLoged = useSelector((state) => state.isLoged);
+	const userId = useSelector((state) => state.userId);
 	const dispatch = useDispatch();
 	// custom hooks
 	const initialState = [];
@@ -32,6 +33,7 @@ const Tasks = () => {
 			data: {
 				description,
 				duration,
+				userId,
 			},
 		})
 			.then((res) => {
@@ -52,47 +54,48 @@ const Tasks = () => {
 			});
 	};
 
-	const fetchTasks = () => {
-		//e.preventDefault();
-		// hitting the signin endpoint, passing username and password
-		axios({
-			method: "POST",
-			url: `http://localhost:3005/fetch-tasks`,
-		})
-			.then((res) => {
-				setListOfOnGoingTasks(
-					(prev) => (prev = res.data.listOfOnGoingTasks)
-				);
-				setListOfDoneOrFaildTasks(
-					(prev) => (prev = res.data.listOfDoneOrFaildTasks)
-				);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	};
 
 	const renderTask = (tasks) => {
 		return tasks.map((task, index) => {
 			//console.log(task.description);
 			//console.log(task.duration);
-			return <ViewTask key={index} task={task} />;
+			return <Task key={index} task={task} />;
 		});
 	};
 
 	const logOut = () => {
-		dispatch({ type: "LOGOUT" });
+		dispatch({ type: "LOGOUT", userId: '111111111111' });
 		history.push("/");
 	};
 
 	useEffect(() => {
-		fetchTasks();
+		const fetchTasks = () => {
+			//e.preventDefault();
+			// hitting the signin endpoint, passing username and password
+			axios({
+				method: "POST",
+				url: `http://localhost:3005/fetch-tasks`,
+				data: { userId }
+			})
+				.then((res) => {
+					setListOfOnGoingTasks(
+						(prev) => (prev = res.data.listOfOnGoingTasks)
+					);
+					setListOfDoneOrFaildTasks(
+						(prev) => (prev = res.data.listOfDoneOrFaildTasks)
+					);
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+		};
+
 		// checking if user is loged
-		console.log(isLoged);
 			if (!isLoged) {
 				history.push('/');
 			}
-		}, [isLoged])
+		fetchTasks();
+		}, [isLoged, userId])
 
 
 	const reset = () => {

@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from "react-redux";
 import BigInput from "../../components/BigInput";
 import history from "../../history";
 // styles
-import "../../styles/signin.css";
+import "./style.css";
 
 const SignIn = () => {
 	// Connect on reducer
@@ -34,7 +34,7 @@ const SignIn = () => {
 			.then((res) => {
 				// if user is loged isLoged state is changed to true and user is redirected to tasks screen
 				if (res.data.note === "created" || res.data.note === "loged") {
-					dispatch({ type: "LOGIN" });
+					dispatch({ type: "LOGIN", userId: res.data.userId });
 				} else {
 					setError(res.data.note);
 				}
@@ -52,7 +52,7 @@ const SignIn = () => {
 	}, [isLoged]);
 
 	return (
-		<div className="container">
+		<div className="container" style={{background: 'url(images/4.png)', backgroundRepeat: 'no-repeat', backgroundSize: 'cover'}}>
 			<form  onSubmit={(e) => handleSubmit(e)} className="signincontainer">
 				<h1 className="h1Signin">Sign in</h1>
 				<hr className="hrsng"></hr>

@@ -1,7 +1,5 @@
-
-
 .container {
-    background: url(./4.png), #FFFFFF;
+  
     width: 100vw;
     height: 100vh;
     display: flex;

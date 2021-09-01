@@ -86,9 +86,14 @@ const Tasks = () => {
 	};
 
 	useEffect(() => {
-		// checking if user is loged
 		fetchTasks();
-	}, []);
+		// checking if user is loged
+		console.log(isLoged);
+			if (!isLoged) {
+				history.push('/');
+			}
+		}, [isLoged])
+
 
 	const reset = () => {
 		setDescription("");

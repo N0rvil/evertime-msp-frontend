@@ -9,6 +9,7 @@ import BigInput from "../../components/BigInput";
 import Task from "../../components/Task";
 import history from "../../history";
 // styles
+import "./style.css";
 
 const Tasks = () => {
 	// Connect on reducer
@@ -26,7 +27,7 @@ const Tasks = () => {
 	// handleSubmit function on submit will send request on login or register
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		// hitting the signin endpoint, passing username and password
+		// hitting the add-task endpoint, passing description, duration and userId
 		axios({
 			method: "POST",
 			url: `http://localhost:3005/add-task`,
@@ -37,7 +38,7 @@ const Tasks = () => {
 			},
 		})
 			.then((res) => {
-				// if user is loged isLoged state is changed to true and user is redirected to tasks screen
+				// if user is loged isLoged state is changed to true
 				if (res.data.note === "created" || res.data.note === "loged") {
 					dispatch({ type: "LOGIN" });
 				} else {
@@ -54,50 +55,53 @@ const Tasks = () => {
 			});
 	};
 
-
-	const renderTask = (tasks) => {
-		return tasks.map((task, index) => {
-			//console.log(task.description);
-			//console.log(task.duration);
-			return <Task key={index} task={task} />;
-		});
-	};
-
+	//changing states to default if the user loggout
 	const logOut = () => {
-		dispatch({ type: "LOGOUT", userId: '111111111111' });
+		dispatch({ type: "LOGOUT", userId: "111111111111" });
 		history.push("/");
 	};
 
-	useEffect(() => {
-		const fetchTasks = () => {
-			//e.preventDefault();
-			// hitting the signin endpoint, passing username and password
-			axios({
-				method: "POST",
-				url: `http://localhost:3005/fetch-tasks`,
-				data: { userId }
+	const fetchTasks = () => {
+		//e.preventDefault();
+		// hitting the signin fetch-task, passing userId
+		axios({
+			method: "POST",
+			url: `http://localhost:3005/fetch-tasks`,
+			data: { userId },
+		})
+			.then((res) => {
+				//updating states with new lists
+				setListOfOnGoingTasks(
+					(prev) => (prev = res.data.listOfOnGoingTasks)
+				);
+				setListOfDoneOrFaildTasks(
+					(prev) => (prev = res.data.listOfDoneOrFaildTasks)
+				);
 			})
-				.then((res) => {
-					setListOfOnGoingTasks(
-						(prev) => (prev = res.data.listOfOnGoingTasks)
-					);
-					setListOfDoneOrFaildTasks(
-						(prev) => (prev = res.data.listOfDoneOrFaildTasks)
-					);
-				})
-				.catch((err) => {
-					console.log(err);
-				});
-		};
+			.catch((err) => {
+				console.log(err);
+			});
+	};
 
+	useEffect(() => {
 		// checking if user is loged
-			if (!isLoged) {
-				history.push('/');
-			}
+		if (!isLoged) {
+			history.push("/");
+		}
+		//fetching the data on the mount of components
 		fetchTasks();
-		}, [isLoged, userId])
+		//bug
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [isLoged, userId]);
 
+	//function to render individuals tasks, by passing them to the new component and returning them in list
+	const renderTask = (tasks) => {
+		return tasks.map((task, index) => {
+			return <Task key={index} task={task} refetch={fetchTasks} />;
+		});
+	};
 
+	//function for reseting add-task form after submit
 	const reset = () => {
 		setDescription("");
 		setDuration("");
@@ -131,6 +135,7 @@ const Tasks = () => {
 				/>
 			</form>
 			<h3>{error}</h3>
+			{/* rendering lists of tasks */}
 			<div className="tasksContainer">
 				<div className="alignment">
 					<h2>On going tasks</h2>
